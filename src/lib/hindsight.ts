@@ -20,7 +20,7 @@ const TOPIC_ALIAS: Record<string, string> = { latency: "Performance", sso: "Secu
 
 function extractTopics(text: string): string[] {
   const t = text.toLowerCase();
-  const found = TOPICS.filter((k) => t.includes(k)).map((k) => TOPIC_ALIAS[k] ?? k[0].toUpperCase() + k.slice(1));
+  const found = TOPICS.filter((k) => t.includes(k)).map((k) => TOPIC_ALIAS[k] ?? k.charAt(0).toUpperCase() + k.slice(1));
   return found.length ? Array.from(new Set(found)) : ["General"];
 }
 
@@ -65,7 +65,7 @@ export async function retainMeetingMemory(input: RetainInput): Promise<Memory[]>
   return memories;
 }
 
-export function recallMeetingMemory(opts: { contactId?: string; query?: string; limit?: number; types?: MemoryType[] }): RecalledMemory[] {
+export function recallMeetingMemory(opts: { contactId?: string | undefined; query?: string; limit?: number; types?: MemoryType[] | undefined }): RecalledMemory[] {
   const { memories } = getState();
   const q = (opts.query ?? "").toLowerCase().split(/\W+/).filter((w) => w.length > 3);
   const now = Date.now();
@@ -99,7 +99,7 @@ export async function reflectOnMeetingContext(input: { contactId: string; title:
   const topTopics = [...topicCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t);
 
   const questions = [
-    ...by("concern").slice(0, 2).map((m) => `Has the concern around ${m.topics[0].toLowerCase()} been resolved for ${first}? ("${m.text.slice(0, 60)}…")`),
+    ...by("concern").slice(0, 2).map((m) => `Has the concern around ${(m.topics[0] ?? "this").toLowerCase()} been resolved for ${first}? ("${m.text.slice(0, 60)}…")`),
     ...openItems.slice(0, 2).map((m) => `Does our update on "${m.text.replace(/^We (will|promised to|committed to) /i, "").slice(0, 60)}" meet ${first}'s expectations?`),
     `What would make "${input.purpose || input.title}" a clear win for ${contact.company}?`,
   ];
@@ -134,7 +134,7 @@ export async function reflectOnMeetingContext(input: { contactId: string; title:
 export function askNexora(question: string): { answer: string; sources: RecalledMemory[] } {
   const { contacts } = getState();
   const q = question.toLowerCase();
-  const contact = contacts.find((c) => q.includes(c.name.toLowerCase().split(" ")[0]) || q.includes(c.company.toLowerCase().split(" ")[0]));
+  const contact = contacts.find((c) => q.includes(c.name.toLowerCase().split(" ")[0] ?? "") || q.includes(c.company.toLowerCase().split(" ")[0] ?? ""));
   let types: MemoryType[] | undefined;
   if (/(promise|commit|owe)/.test(q)) types = ["commitment"];
   else if (/(concern|worr|risk)/.test(q)) types = ["concern"];

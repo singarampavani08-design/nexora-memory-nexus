@@ -58,7 +58,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         case 6: setAssistantOpen(false); break;
       }
       if (demoStep < DEMO_STEPS.length) {
-        timer.current = setTimeout(() => setDemoStep((s) => (s + 1 >= DEMO_STEPS.length ? -1 : s + 1)), DEMO_STEPS[demoStep].ms);
+        timer.current = setTimeout(() => setDemoStep((s) => (s + 1 >= DEMO_STEPS.length ? -1 : s + 1)), DEMO_STEPS[demoStep]?.ms ?? 5000);
       }
     };
     run();

@@ -27,7 +27,7 @@ export interface Memory {
   text: string;
   date: string;
   topics: string[];
-  status?: "open" | "done";
+  status?: "open" | "done" | undefined;
 }
 
 export interface RecalledMemory extends Memory {

@@ -134,8 +134,8 @@ export function AssistantPanel() {
 
 export function DemoOverlay() {
   const { demoStep, stopDemo } = useApp();
-  if (demoStep < 0) return null;
-  const step = DEMO_STEPS[demoStep];
+  if (demoStep < 0 || !DEMO_STEPS[demoStep]) return null;
+  const step = DEMO_STEPS[demoStep]!;
   return (
     <div className="fixed bottom-5 left-1/2 z-[60] w-[min(640px,calc(100%-2rem))] -translate-x-1/2 animate-fade-up">
       <div className="glass rounded-2xl border-primary/40 p-4 glow" key={demoStep}>

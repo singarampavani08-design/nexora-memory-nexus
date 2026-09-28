@@ -53,6 +53,7 @@ function Prepare() {
 
   useEffect(() => {
     if (sp.auto && !autoRan.current) { autoRan.current = true; const t = setTimeout(generate, 1200); return () => clearTimeout(t); }
+    return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp.auto]);
 
